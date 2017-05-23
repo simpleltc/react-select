@@ -103,7 +103,8 @@ const Select = createClass({
 		optionRenderer: PropTypes.func,       // optionRenderer: function (option) {}
 		options: PropTypes.array,             // array of options
 		pageSize: PropTypes.number,           // number of entries to page when using page up/down keys
-		placeholder: stringOrNode,                  // field placeholder, displayed when there's no value
+		placeholder: stringOrNode,			  // field placeholder, displayed when there's no value
+		persistentPlaceholder: PropTypes.bool,// display the placeholder even when options are selected
 		required: PropTypes.bool,             // applies HTML5 required attribute when needed
 		resetValue: PropTypes.any,            // value to use when you clear the control
 		scrollMenuIntoView: PropTypes.bool,   // boolean to enable the viewport to shift so that the full menu fully visible when engaged
@@ -859,7 +860,8 @@ const Select = createClass({
 			onFocus: this.handleInputFocus,
 			ref: ref => this.input = ref,
 			required: this.state.required,
-			value: this.state.inputValue
+			value: this.state.inputValue,
+			placeholder: valueArray.length > 0 && this.props.persistentPlaceholder ? this.props.placeholder : undefined
 		});
 
 		if (this.props.inputRenderer) {

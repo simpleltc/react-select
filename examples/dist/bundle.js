@@ -270,7 +270,7 @@ function defaultChildren(props) {
 }
 module.exports = exports['default'];
 
-},{"./Select":"react-select","./utils/stripDiacritics":10,"prop-types":undefined,"react":undefined}],2:[function(require,module,exports){
+},{"./Select":"@simple/react-select","./utils/stripDiacritics":10,"prop-types":undefined,"react":undefined}],2:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -337,7 +337,7 @@ var AsyncCreatable = (0, _createReactClass2['default'])({
 
 module.exports = AsyncCreatable;
 
-},{"./Select":"react-select","create-react-class":undefined,"react":undefined}],3:[function(require,module,exports){
+},{"./Select":"@simple/react-select","create-react-class":undefined,"react":undefined}],3:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -667,7 +667,7 @@ function shouldKeyDownEventCreateNewOption(_ref6) {
 
 module.exports = Creatable;
 
-},{"./Select":"react-select","./utils/defaultFilterOptions":8,"./utils/defaultMenuRenderer":9,"create-react-class":undefined,"prop-types":undefined,"react":undefined}],4:[function(require,module,exports){
+},{"./Select":"@simple/react-select","./utils/defaultFilterOptions":8,"./utils/defaultMenuRenderer":9,"create-react-class":undefined,"prop-types":undefined,"react":undefined}],4:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -1071,7 +1071,7 @@ module.exports = function stripDiacritics(str) {
 	return str;
 };
 
-},{}],"react-select":[function(require,module,exports){
+},{}],"@simple/react-select":[function(require,module,exports){
 /*!
   Copyright (c) 2016 Jed Watson.
   Licensed under the MIT License (MIT), see
@@ -1231,6 +1231,7 @@ var Select = (0, _createReactClass2['default'])({
 		options: _propTypes2['default'].array, // array of options
 		pageSize: _propTypes2['default'].number, // number of entries to page when using page up/down keys
 		placeholder: stringOrNode, // field placeholder, displayed when there's no value
+		persistentPlaceholder: _propTypes2['default'].bool, // display the placeholder even when options are selected
 		required: _propTypes2['default'].bool, // applies HTML5 required attribute when needed
 		resetValue: _propTypes2['default'].any, // value to use when you clear the control
 		scrollMenuIntoView: _propTypes2['default'].bool, // boolean to enable the viewport to shift so that the full menu fully visible when engaged
@@ -2028,7 +2029,8 @@ var Select = (0, _createReactClass2['default'])({
 				return _this5.input = _ref;
 			},
 			required: this.state.required,
-			value: this.state.inputValue
+			value: this.state.inputValue,
+			placeholder: valueArray.length > 0 && this.props.persistentPlaceholder ? this.props.placeholder : undefined
 		});
 
 		if (this.props.inputRenderer) {
@@ -2041,10 +2043,12 @@ var Select = (0, _createReactClass2['default'])({
 
 			var divProps = _objectWithoutProperties(_props$inputProps, ['inputClassName']);
 
+			var _ariaOwns = (0, _classnames2['default'])(_defineProperty({}, this._instancePrefix + '-list', isOpen));
+
 			return _react2['default'].createElement('div', _extends({}, divProps, {
 				role: 'combobox',
 				'aria-expanded': isOpen,
-				'aria-owns': isOpen ? this._instancePrefix + '-list' : this._instancePrefix + '-value',
+				'aria-owns': _ariaOwns,
 				'aria-activedescendant': isOpen ? this._instancePrefix + '-option-' + focusedOptionIndex : this._instancePrefix + '-value',
 				className: className,
 				tabIndex: this.props.tabIndex || 0,
@@ -2068,7 +2072,8 @@ var Select = (0, _createReactClass2['default'])({
 	},
 
 	renderClear: function renderClear() {
-		if (!this.props.clearable || !this.props.value || this.props.value === 0 || this.props.multi && !this.props.value.length || this.props.disabled || this.props.isLoading) return;
+
+		if (!this.props.clearable || this.props.value === undefined || this.props.value === null || this.props.multi && !this.props.value.length || this.props.disabled || this.props.isLoading) return;
 		var clear = this.props.clearRenderer();
 
 		return _react2['default'].createElement(
@@ -2186,11 +2191,12 @@ var Select = (0, _createReactClass2['default'])({
 		var options = this._visibleOptions;
 		if (!options.length) return null;
 
+		var valueKey = this.props.valueKey;
 		var focusedOption = this.state.focusedOption || selectedOption;
 		if (focusedOption && !focusedOption.disabled) {
 			var focusedOptionIndex = -1;
 			options.some(function (option, index) {
-				var isOptionEqual = option.value === focusedOption.value;
+				var isOptionEqual = option[valueKey] === focusedOption[valueKey];
 				if (isOptionEqual) {
 					focusedOptionIndex = index;
 				}

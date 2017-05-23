@@ -955,6 +955,7 @@ var Select = (0, _createReactClass2['default'])({
 		options: _propTypes2['default'].array, // array of options
 		pageSize: _propTypes2['default'].number, // number of entries to page when using page up/down keys
 		placeholder: stringOrNode, // field placeholder, displayed when there's no value
+		persistentPlaceholder: _propTypes2['default'].bool, // display the placeholder even when options are selected
 		required: _propTypes2['default'].bool, // applies HTML5 required attribute when needed
 		resetValue: _propTypes2['default'].any, // value to use when you clear the control
 		scrollMenuIntoView: _propTypes2['default'].bool, // boolean to enable the viewport to shift so that the full menu fully visible when engaged
@@ -1752,7 +1753,8 @@ var Select = (0, _createReactClass2['default'])({
 				return _this5.input = _ref;
 			},
 			required: this.state.required,
-			value: this.state.inputValue
+			value: this.state.inputValue,
+			placeholder: valueArray.length > 0 && this.props.persistentPlaceholder ? this.props.placeholder : undefined
 		});
 
 		if (this.props.inputRenderer) {
@@ -1765,10 +1767,12 @@ var Select = (0, _createReactClass2['default'])({
 
 			var divProps = _objectWithoutProperties(_props$inputProps, ['inputClassName']);
 
+			var _ariaOwns = (0, _classnames2['default'])(_defineProperty({}, this._instancePrefix + '-list', isOpen));
+
 			return _react2['default'].createElement('div', _extends({}, divProps, {
 				role: 'combobox',
 				'aria-expanded': isOpen,
-				'aria-owns': isOpen ? this._instancePrefix + '-list' : this._instancePrefix + '-value',
+				'aria-owns': _ariaOwns,
 				'aria-activedescendant': isOpen ? this._instancePrefix + '-option-' + focusedOptionIndex : this._instancePrefix + '-value',
 				className: className,
 				tabIndex: this.props.tabIndex || 0,
@@ -1792,7 +1796,8 @@ var Select = (0, _createReactClass2['default'])({
 	},
 
 	renderClear: function renderClear() {
-		if (!this.props.clearable || !this.props.value || this.props.value === 0 || this.props.multi && !this.props.value.length || this.props.disabled || this.props.isLoading) return;
+
+		if (!this.props.clearable || this.props.value === undefined || this.props.value === null || this.props.multi && !this.props.value.length || this.props.disabled || this.props.isLoading) return;
 		var clear = this.props.clearRenderer();
 
 		return _react2['default'].createElement(
@@ -1910,11 +1915,12 @@ var Select = (0, _createReactClass2['default'])({
 		var options = this._visibleOptions;
 		if (!options.length) return null;
 
+		var valueKey = this.props.valueKey;
 		var focusedOption = this.state.focusedOption || selectedOption;
 		if (focusedOption && !focusedOption.disabled) {
 			var focusedOptionIndex = -1;
 			options.some(function (option, index) {
-				var isOptionEqual = option.value === focusedOption.value;
+				var isOptionEqual = option[valueKey] === focusedOption[valueKey];
 				if (isOptionEqual) {
 					focusedOptionIndex = index;
 				}
