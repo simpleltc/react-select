@@ -894,7 +894,7 @@ const Select = createClass({
 
 		if (this.props.autosize) {
 			return (
-				<AutosizeInput {...inputProps} minWidth="5" />
+				<AutosizeInput {...inputProps} minWidth="5" style={{ display: 'block' }} />
 			);
 		}
 		return (

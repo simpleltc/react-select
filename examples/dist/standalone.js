@@ -1786,7 +1786,7 @@ var Select = (0, _createReactClass2['default'])({
 		}
 
 		if (this.props.autosize) {
-			return _react2['default'].createElement(_reactInputAutosize2['default'], _extends({}, inputProps, { minWidth: '5' }));
+			return _react2['default'].createElement(_reactInputAutosize2['default'], _extends({}, inputProps, { minWidth: '5', style: { display: 'block' } }));
 		}
 		return _react2['default'].createElement(
 			'div',
